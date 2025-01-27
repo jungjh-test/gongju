@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mainLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>포설신청 목록</title>
+    <!-- 개별 CSS -->
+    <link th:href="@{/css/old/cablerequest/requestList.css}" rel="stylesheet"/>
+</head>
+
+<!-- layout의 main 부분에 삽입할 영역 -->
+<body>
+<main layout:fragment="content">
+    <div class="request-list-container">
+        <h2>포설신청 목록</h2>
+
+        <!-- 검색영역 -->
+        <div class="search-area">
+            <label>기관명: <input type="text" id="orgName"></label>
+            <label>승인여부:
+                <select id="approvalStatus">
+                    <option value="">전체</option>
+                    <option value="대기">대기</option>
+                    <option value="승인">승인</option>
+                    <option value="반려">반려</option>
+                </select>
+            </label>
+            <button type="button" id="btnSearch">검색</button>
+        </div>
+
+        <!-- 목록 테이블 -->
+        <table class="list-table">
+            <thead>
+            <tr>
+                <th>NO</th>
+                <th>기관명</th>
+                <th>부서명</th>
+                <th>작업목적</th>
+                <th>작업일자</th>
+                <th>승인상태</th>
+                <th>신청일자</th>
+                <th>신청서</th>
+            </tr>
+            </thead>
+            <tbody id="requestTbody">
+            <!-- AJAX로 목록 데이터 바인딩 -->
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<!-- 개별 JS -->
+<script th:src="@{/js/old/cablerequest/requestList.js}"></script>
+</body>
+</html>

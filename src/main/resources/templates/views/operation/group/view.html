@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+
+</head>
+<main layout:fragment="content">
+
+    <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+
+        <div class="flex-row-end custom-padding-10">
+            <p id="inquiry_time" style="margin: 0;">조회시간 : 2025-01-06 15:07:49</p>
+            <div class="custom-button-wrap custom-margin-left-10">
+                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">검색</button>
+                <button type="button" class="custom-btn custom-blue-btn" onclick="toggleFold()">∨</button>
+            </div>
+        </div>
+
+        <div id="foldableContent" class="tbl-bootstrap-wrap custom-border-top-solid">
+            <table class="table-hover-delete">
+                <tbody>
+                <tr>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">계정그룹ID</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-28per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">계정그룹명</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-50per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+
+        <div class="flex-row-between custom-padding-10">
+            <p id="table-cnt" style="margin: 0;">전체 개수 : 6개</p>
+            <div class="custom-button-wrap custom-margin-left-10">
+                <button type="button" class="custom-btn custom-blue-btn" onclick="createGroupInfo()">등록</button>
+                <button type="button" class="custom-btn custom-blue-btn" onclick="deleteGroupInfo()">삭제</button>
+            </div>
+        </div>
+
+        <div class="custom-border-top-solid">
+            <div id="handsontable-container"></div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="script">
+        <!--
+        <script th:src="@{/js/operation/group/view.js}"></script>
+        -->
+        <script th:inline="javascript">
+
+            function deleteGroupInfo() {
+                Swal.fire({
+                    title: "알림",
+                    html: "정말 삭제하시겠습니까?",
+                    icon: "info",
+                    confirmButtonText: "삭제",
+                    cancelButtonText: '취소',
+                    showCancelButton: true,
+                    heightAuto: false,
+                }).then((result) => {
+                    if(result.isConfirmed){
+                        let selectedRow = checkSelectAll(hot);
+                        if (selectedRow.length === 0) {
+                            alert2("알림", "삭제할 계정그룹을 선택해주세요.", "info", "확인");
+                            return false;
+                        }
+
+                        let myAccount = /*[[${accountData}]]*/;
+                        let myGroupId = myAccount.groupId; // 현재 사용자의 아이디
+                        let groupId = selectedRow.map(row => row[1]);
+
+                        // 자신이 속한 계정그룹이 groupId 배열에 포함되어 있는지 확인
+                        if (groupId.includes(myGroupId)) {
+                            alert2("알림", "자신이 속한 계정그룹은 삭제할 수 없습니다.", "info", "확인");
+                            return false;
+                        }
+
+                        $.ajax({
+                            url: '/operation/group/delete',
+                            method: 'post',
+                            contentType: 'application/json',
+                            data : JSON.stringify({groupId: groupId}),
+                            dataType : 'JSON',
+                            success: function (res) {
+                                if (!res.errorCode){
+                                    alert('계정그룹 데이터를 삭제하는 중 오류가 발생했습니다.');
+                                    return false;
+                                }
+
+                                alert2('알림', '삭제가 완료되었습니다!', 'success', '확인', tableRefresh('/operation/group/list'));
+                            },
+                            error: function () {
+                                alert('계정그룹 데이터를 불러오는 중 오류가 발생했습니다.');
+                            }
+                        });
+                    }
+                });
+            }
+
+            let hot;
+            $(function() {
+
+                let handsonColumns = [
+                    createHandsonColumn('checkbox', ''),
+                    createHandsonColumn('group_id', '계정그룹ID'),
+                    createHandsonColumn('group_name', '계정그룹명'),
+                    createHandsonColumn('group_description', '계정그룹설명'),
+                    createHandsonColumn('group_cnt', '메뉴 수'),
+                    createHandsonColumn('group_setting', '메뉴 설정', menuSetting),
+                ];
+
+                let container = document.getElementById('handsontable-container');
+                hot = new Handsontable(container, {
+                    data: [],
+                    columns: handsonColumns,
+                    colHeaders: true,             // 열 헤더 표시
+                    rowHeaders: false,            // 행 번호 표시
+                    contextMenu: true,            // 마우스 오른쪽 클릭 메뉴 활성화
+                    autoRowSize: true,            // 행 높이 자동 조정
+                    autoColumnSize: true,         // 열 높이 자동 조정
+                    columnSorting: true,          // 열 정렬 가능
+                    width: '100%',                // 테이블 너비 지정
+                    height: 500,                  // 테이블 높이 설정
+                    stretchH: 'all',              // 열이 부모 크기에 맞게 늘어남
+                    overflow: 'hidden',
+
+                    afterGetColHeader(col, TH) {
+                        if (col === 0) {
+                            const existingCheckbox = TH.querySelector('input[type="checkbox"]');
+
+                            if (!existingCheckbox) {
+                                const checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                checkbox.addEventListener('click', function () {
+                                    toggleSelectAll(hot, col, this.checked);
+                                });
+                                TH.innerHTML = '';
+                                TH.appendChild(checkbox);
+                            }
+                        }
+                    },
+                });
+
+                tableRefresh('/operation/group/list');
+            });
+
+
+            // 계정그룹 등록 모달
+            function createGroupInfo(){
+                Swal.fire({
+                    html: generateCreateInfoHTML(),
+                    focusConfirm: false,
+                    confirmButtonText: '저장',
+                    cancelButtonText: '취소',
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    heightAuto: false,
+                    customClass: {
+                        popup: 'custom-width'
+                    },
+                    preConfirm: () => {
+                        const groupId = document.getElementById("group_id").value.trim(); // 계정그룹ID
+                        const groupName = document.getElementById("group_name").value.trim(); // 계정그룹명
+                        const groupDesc = document.getElementById("group_desc").value.trim(); // 계정그룹설명
+
+                        // 중복확인 버튼 상태 확인
+                        const checkButton = document.querySelector("#group_id_chkbtn");
+                        if (!checkButton.classList.contains("btn-disabled")) {
+                            Swal.showValidationMessage("ID 중복확인이 필요합니다.");
+                            return false;
+                        }
+
+                        // 필수 필드 검증
+                        if (!groupId) {
+                            Swal.showValidationMessage("계정그룹ID를 입력해주세요.");
+                            return false;
+                        }
+
+                        return {
+                            groupId, groupName, groupDesc
+                        };
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const data = result.value;
+                        let url = '/operation/group/create'
+
+                        $.ajax({
+                            url : url,
+                            type: 'post',
+                            contentType: 'application/json',
+                            data : JSON.stringify(data),
+                            dataType : 'JSON',
+                            success: function (res) {
+                                if (!res.errorCode){
+                                    alert('계정그룹 데이터를 저장하는 중 오류가 발생했습니다.');
+                                    return false;
+                                }
+
+                                alert2('알림', '저장이 완료되었습니다!', 'success', '확인', tableRefresh('/operation/group/list'));
+                            },
+                            error: function () {
+                                alert('사용자 데이터를 저장하는 중 오류가 발생했습니다.');
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 계정그룹 등록 모달 html 렌더링
+            function generateCreateInfoHTML(){
+
+                return `
+                    <div class="flex-row-between custom-padding-10">
+                        <p style="margin: 0;">계정그룹등록</p>
+                        <div class="custom-button-wrap custom-margin-left-10">
+                        </div>
+                    </div>
+
+                    <div class="custom-width-400">
+
+                        <div class="tbl-bootstrap-wrap custom-border-top-solid">
+                            <table class="table-hover-delete">
+                                <tbody>
+                                    <tr>
+                                        <td class="custom-tb-title custom-width-5per">
+                                            <label for="group_id" class="custom-tb-title-text custom-font-color-blue">＊ 계정그룹ID</label>
+                                        </td>
+                                        <td class="custom-tb-content custom-width-11per">
+                                            <input id="group_id" name="group_id" class="custom-input custom-width-50per" oninput="resetCheckButton()" />
+                                            <button type="button" id="group_id_chkbtn" class="custom-btn custom-blue-btn" onclick="checkGroupId()">중복확인</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="custom-tb-title custom-width-5per">
+                                            <label for="group_name" class="custom-tb-title-text custom-font-color-blue">계정그룹명</label>
+                                        </td>
+                                        <td class="custom-tb-content custom-width-11per">
+                                            <input id="group_name" name="group_name" class="custom-input" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="custom-tb-title custom-width-5per">
+                                            <label for="group_desc" class="custom-tb-title-text custom-font-color-blue">계정그룹설명</label>
+                                        </td>
+                                        <td class="custom-tb-content custom-width-11per">
+                                            <input id="group_desc" name="group_desc" class="custom-input" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                 `;
+            }
+
+            // 중복확인 버튼 클릭
+            function checkGroupId() {
+                const groupId = document.getElementById("group_id").value;
+                if (!groupId) {
+                    Swal.showValidationMessage("계정그룹 ID를 입력해주세요.");
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/operation/group/duplicate",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ groupId }),
+                    success: function (res) {
+                        let errorCode = res.errorCode;
+
+                        if(!errorCode){
+                            alert2('알림', '문제가 발생하였습니다. </br>관리자에게 문의해주세요.', 'error', '확인');
+                        }
+                        else{
+                            if (res.isDuplicate) {
+                                Swal.showValidationMessage("중복된 ID입니다.");
+                                return false;
+                            }
+                            Swal.resetValidationMessage();
+
+                            const checkButton = document.querySelector("#group_id_chkbtn");
+                            checkButton.textContent = "확인완료";
+                            checkButton.disabled = true;
+                            checkButton.classList.add("btn-disabled");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("서버와 통신 중 오류가 발생했습니다.");
+                    }
+                });
+            }
+
+            // 중복확인 후 id가 수정되면 중복확인 비활성화 제거
+            function resetCheckButton(){
+                const checkButton = document.querySelector("#group_id_chkbtn");
+
+                checkButton.textContent = "중복확인";
+                checkButton.disabled = false;
+                checkButton.classList.remove("btn-disabled");
+            }
+
+            // 메뉴 설정 팝업
+            function menuSetting(row){
+                console.log("menuSetting", row, hot.getDataAtRow(row));
+                let groupId = hot.getDataAtRow(row)[1];
+                popupManager.Prompt({
+                    url: "https://example.com",
+                    title: "Example Popup",
+                    width: 800,
+                    height: 600,
+                })
+                .then((result) => {
+                    console.log("Popup finished:", result); // 팝업 종료 후 결과 처리
+                })
+                .catch((error) => {
+                    console.error("Popup Error:", error); // 팝업 차단 또는 실패 처리
+                });
+            }
+
+        </script>
+    </th:block>
+</main>
+
+</html>

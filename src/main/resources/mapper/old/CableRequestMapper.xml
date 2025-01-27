@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cms.gongju.old.cablerequest.mapper.CableRequestMapper">
+
+    <!-- 포설 신청 목록 조회 예시 -->
+    <select id="selectCableRequestList" parameterType="map" resultType="map">
+        SELECT
+        CR.REQUEST_ID
+        ,CR.ORG_NAME
+        ,CR.DEPT_NAME
+        ,CR.POSITION_TITLE
+        ,CR.WORK_PURPOSE
+        ,DATE_FORMAT(CR.WORK_START_DATE, '%Y-%m-%d') AS WORK_START_DATE
+        ,DATE_FORMAT(CR.WORK_END_DATE, '%Y-%m-%d') AS WORK_END_DATE
+        ,CR.APPROVAL_STATUS
+        ,CR.REG_DT
+        FROM TB_CABLE_REQUEST CR
+        WHERE CR.DEL_YN = 'N'
+        <!-- 예시) 검색조건 -->
+        <if test="orgName != null and orgName != '' ">
+            AND CR.ORG_NAME LIKE CONCAT('%', #{orgName}, '%')
+        </if>
+        <if test="approvalStatus != null and approvalStatus != '' ">
+            AND CR.APPROVAL_STATUS = #{approvalStatus}
+        </if>
+        ORDER BY CR.REQUEST_ID DESC
+    </select>
+
+    <!-- 단일 신청 조회 -->
+    <select id="selectCableRequest" parameterType="long" resultType="cms.gongju.old.cablerequest.vo.CableRequestVO">
+        SELECT
+        REQUEST_ID
+        ,ORG_NAME
+        ,DEPT_NAME
+        ,POSITION_TITLE
+        ,WORK_PURPOSE
+        ,WORK_DATE_TYPE
+        ,WORK_START_DATE
+        ,WORK_END_DATE
+        ,APPROVAL_STATUS
+        ,APPROVER_ID
+        ,APPROVAL_DT
+        ,APPROVAL_REMARKS
+        ,DEL_YN
+        ,REG_ID
+        ,REG_DT
+        ,UPD_ID
+        ,UPD_DT
+        FROM TB_CABLE_REQUEST
+        WHERE REQUEST_ID = #{requestId}
+        AND DEL_YN = 'N'
+    </select>
+
+    <!-- 신청 Insert -->
+    <insert id="insertCableRequest" parameterType="map">
+        INSERT INTO TB_CABLE_REQUEST
+        (
+        ORG_NAME
+        ,DEPT_NAME
+        ,POSITION_TITLE
+        ,WORK_PURPOSE
+        ,WORK_DATE_TYPE
+        ,WORK_START_DATE
+        ,WORK_END_DATE
+        ,APPROVAL_STATUS
+        ,DEL_YN
+        ,REG_ID
+        ,REG_DT
+        )
+        VALUES
+        (
+        #{orgName}
+        ,#{deptName}
+        ,#{positionTitle}
+        ,#{workPurpose}
+        ,#{workDateType}
+        ,#{workStartDate}
+        ,#{workEndDate}
+        ,'대기'
+        ,'N'
+        ,#{loginUserId}
+        ,NOW()
+        )
+    </insert>
+
+    <!-- 신청 Update -->
+    <update id="updateCableRequest" parameterType="map">
+        UPDATE TB_CABLE_REQUEST
+        SET ORG_NAME = #{orgName}
+        ,DEPT_NAME = #{deptName}
+        ,POSITION_TITLE = #{positionTitle}
+        ,WORK_PURPOSE = #{workPurpose}
+        ,WORK_DATE_TYPE = #{workDateType}
+        ,WORK_START_DATE = #{workStartDate}
+        ,WORK_END_DATE = #{workEndDate}
+        ,UPD_ID = #{loginUserId}
+        ,UPD_DT = NOW()
+        WHERE REQUEST_ID = #{requestId}
+    </update>
+
+    <!-- 작업자 목록 조회 (팝업) -->
+    <select id="selectWorkerList" parameterType="map" resultType="map">
+        SELECT
+        WORKER_ID
+        ,COMPANY_NAME
+        ,JOB_TITLE
+        ,WORKER_NAME
+        ,CONTACT
+        FROM TB_WORKER
+        WHERE 1=1
+        <if test="companyName != null and companyName != ''">
+            AND COMPANY_NAME LIKE CONCAT('%', #{companyName}, '%')
+        </if>
+        <if test="workerName != null and workerName != ''">
+            AND WORKER_NAME LIKE CONCAT('%', #{workerName}, '%')
+        </if>
+        ORDER BY WORKER_ID DESC
+    </select>
+
+    <!-- 장비정보 Insert (예시) -->
+    <insert id="insertEquipmentInfo" parameterType="map">
+        <!-- 실제 업무 테이블과 컬럼명에 맞추어 수정 필요 -->
+        INSERT INTO TB_EQUIPMENT
+        (
+        EQP_NAME
+        ,EQP_TYPE
+        ,REG_ID
+        ,REG_DT
+        )
+        VALUES
+        (
+        #{eqpName}
+        ,#{eqpType}
+        ,#{loginUserId}
+        ,NOW()
+        )
+    </insert>
+
+</mapper>

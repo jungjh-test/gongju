@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mainLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>작업자 검색</title>
+    <link th:href="@{/css/old/cablerequest/workerPopup.css}" rel="stylesheet"/>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="worker-popup-container">
+        <h3>작업자 목록</h3>
+        <div class="search-area">
+            <label>회사명: <input type="text" id="companyName"></label>
+            <label>성명: <input type="text" id="workerName"></label>
+            <button type="button" id="btnWorkerSearch">검색</button>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>선택</th>
+                <th>회사명</th>
+                <th>직책</th>
+                <th>성명</th>
+                <th>연락처</th>
+            </tr>
+            </thead>
+            <tbody id="popupWorkerTbody">
+            <!-- AJAX로 바인딩 -->
+            </tbody>
+        </table>
+        <div class="btn-area">
+            <button type="button" id="btnRegisterSelected">등록</button>
+            <button type="button" onclick="window.close()">취소</button>
+        </div>
+    </div>
+</main>
+
+<script th:src="@{/js/old/cablerequest/workerPopup.js}"></script>
+</body>
+</html>

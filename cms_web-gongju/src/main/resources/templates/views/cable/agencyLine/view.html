@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+
+</head>
+    <main layout:fragment="content">
+
+        <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+
+            <div class="flex-row-end custom-padding-10">
+                <p id="inquiry_time" style="margin: 0;">조회시간 : 2023-05-11 09:11:30</p>
+                <div class="custom-button-wrap custom-margin-left-10">
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="searchHistory()">이력조회</button>
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">검색</button>
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="toggleFold()">∨</button>
+                </div>
+            </div>
+
+            <div id="foldableContent" class="tbl-bootstrap-wrap custom-border-top-solid">
+                <table class="table-hover-delete">
+                    <tbody>
+                        <tr>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">타입</label>
+                            </td>
+                            <td colspan="3" class="custom-tb-content custom-width-28per">
+                                <select id="asset_id" name="asset_id" class="custom-select" style="width: 60% !important;">
+                                    <option value="1">전체</option>
+                                    <option value="2">테스트 1</option>
+                                    <option value="3">테스트 2</option>
+                                </select>
+                                <select id="asset_id2" name="asset_id2" class="custom-select" style="width:35% !important;">
+                                    <option value="1">전체</option>
+                                    <option value="2">테스트 3</option>
+                                    <option value="3">테스트 4</option>
+                                </select>
+                            </td>
+                            <td colspan="2" class="custom-tb-content custom-width-19per">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox"><span></span>패치구간
+                                </label>
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">전산실</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <select id="asset_id" name="asset_id" class="custom-select">
+                                    <option value="1">전체</option>
+                                    <option value="2">테스트 5</option>
+                                    <option value="3">테스트 6</option>
+                                </select>
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">회선상태</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <select id="asset_id" name="asset_id" class="custom-select">
+                                    <option value="1">전체</option>
+                                    <option value="2">테스트 7</option>
+                                    <option value="3">테스트 8</option>
+                                </select>
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">전용회선</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <select id="asset_id" name="asset_id" class="custom-select">
+                                    <option value="1">전체</option>
+                                    <option value="2">테스트 9</option>
+                                    <option value="3">테스트 10</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">포설일자</label>
+                            </td>
+                            <td colspan="5" class="custom-tb-content custom-width-47per">
+                                <label class="custom-radio">
+                                    <input type="radio" name="radio-group"><span></span>전체
+                                </label>
+                                <label class="custom-radio">
+                                    <input type="radio" name="radio-group"><span></span>금일
+                                </label>
+                                <label class="custom-radio">
+                                    <input type="radio" name="radio-group"><span></span>금월
+                                </label>
+                                <label class="custom-radio">
+                                    <input type="radio" name="radio-group"><span></span>전월
+                                </label>
+                                <label class="custom-radio">
+                                    <input type="radio" name="radio-group"><span></span>기간선택
+                                </label>
+                                <input type="text" name="datetimes" class="custom-input custom-width-150" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">회선번호</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td colspan="4" class="custom-tb-content custom-width-37per">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="custom-tb-title custom-width-52per">
+                                <label for="asset_id" class="custom-tb-title-text">START</label>
+                            </td>
+                            <td colspan="6" class="custom-tb-title custom-width-48per">
+                                <label for="asset_id" class="custom-tb-title-text">END</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">구성(자산)ID</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">좌표</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">업무명</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">구성(자산)ID</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">좌표</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                            <td class="custom-tb-title custom-width-5per">
+                                <label for="asset_id" class="custom-tb-title-text">업무명</label>
+                            </td>
+                            <td class="custom-tb-content custom-width-11per">
+                                <input id="asset_id" name="asset_id" class="custom-input" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="contentCardWrap custom-width-min-1280">
+
+            <div class="flex-row-between custom-padding-10">
+                <p id="table-cnt" style="margin: 0;">전체 개수 : 105개</p>
+                <div class="custom-button-wrap custom-margin-left-10">
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="searchHistory()">라벨출력</button>
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">QR드라이버</button>
+                    <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">삭제</button>
+                    <button type="button" class="custom-btn custom-gray-btn" onclick="searchButton()">엑셀</button>
+                </div>
+            </div>
+
+            <div class="custom-border-top-solid">
+                <div id="handsontable-container"></div>
+            </div>
+        </div>
+
+        <th:block layout:fragment="script">
+            <script th:src="@{/js/cable/agencyLine/view.js}"></script>
+        </th:block>
+    </main>
+
+</html>

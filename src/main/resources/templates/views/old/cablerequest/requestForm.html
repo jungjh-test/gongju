@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mainLayout}">
+<head>
+    <meta charset="UTF-8">
+    <title>포설신청 작성</title>
+    <!-- 개별 CSS -->
+    <link th:href="@{/css/old/cablerequest/requestForm.css}" rel="stylesheet"/>
+</head>
+<body>
+<main layout:fragment="content">
+    <div class="request-form-container">
+        <h2>포설신청 등록/수정</h2>
+        <!-- 상단 요청자/기관/작업 목적 -->
+        <div class="top-area">
+            <input type="hidden" id="requestId" th:value="${cableRequestVO.requestId}"/>
+            <label>기관명: <input type="text" id="orgName" th:value="${cableRequestVO.orgName}"></label>
+            <label>부서명: <input type="text" id="deptName" th:value="${cableRequestVO.deptName}"></label>
+            <label>직급(직책): <input type="text" id="positionTitle" th:value="${cableRequestVO.positionTitle}"></label>
+            <label>작업목적: <input type="text" id="workPurpose" th:value="${cableRequestVO.workPurpose}"></label>
+        </div>
+
+        <!-- 작업일자 구분 (당일/기간) -->
+        <div class="date-area">
+            <label>작업일자 구분:
+                <select id="workDateType" th:value="${cableRequestVO.workDateType}">
+                    <option value="D">당일</option>
+                    <option value="R">기간선택</option>
+                </select>
+            </label>
+            <label>시작일: <input type="date" id="workStartDate"
+                               th:value="${#temporals.format(cableRequestVO.workStartDate, 'yyyy-MM-dd')}"></label>
+            <label>종료일: <input type="date" id="workEndDate"
+                               th:value="${#temporals.format(cableRequestVO.workEndDate, 'yyyy-MM-dd')}"></label>
+        </div>
+
+        <!-- 중간: 작업자(업체) 정보 -->
+        <div class="worker-area">
+            <h3>작업자 정보</h3>
+            <button type="button" id="btnAddWorker">추가</button>
+            <table>
+                <thead>
+                <tr>
+                    <th>회사명</th>
+                    <th>직책</th>
+                    <th>성명</th>
+                    <th>연락처</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody id="workerTbody">
+                <!-- 화면에서 동적으로 추가 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 작업내역(케이블정보, 포트정보 등) -->
+        <div class="detail-area">
+            <h3>작업 내역</h3>
+            <button type="button" id="btnAddDetail">추가</button>
+            <table>
+                <thead>
+                <tr>
+                    <th>케이블유형</th>
+                    <th>색상</th>
+                    <th>길이</th>
+                    <th>출발지(장비/포트)</th>
+                    <th>도착지(장비/포트)</th>
+                    <th>비고</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody id="detailTbody">
+                <!-- 화면에서 동적으로 추가 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 등록/취소 버튼 -->
+        <div class="btn-area">
+            <button type="button" id="btnSave">저장</button>
+            <button type="button" onclick="history.back()">취소</button>
+        </div>
+    </div>
+</main>
+
+<!-- 개별 JS -->
+<script th:src="@{/js/old/cablerequest/requestForm.js}"></script>
+</body>
+</html>

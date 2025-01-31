@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <!-- 필요한 meta, title, link 등이 있다면 여기에 추가합니다. -->
+</head>
+
+<main layout:fragment="content">
+
+    <!-- ========================= [상단: 요청자 정보] ========================= -->
+    <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+        <div class="flex-row-between custom-padding-10">
+            <p id="inquiry_time" style="margin: 0;">요청자정보</p>
+            <div class="custom-button-wrap custom-margin-left-10">
+                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">임시저장</button>
+                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">불러오기</button>
+                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">등록</button>
+            </div>
+        </div>
+
+        <div class="tbl-bootstrap-wrap custom-border-top-solid">
+            <table class="table-hover-delete">
+                <tbody>
+                <tr>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">기관명</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-11per">
+                        <select id="asset_id" name="asset_id" class="custom-select">
+                            <option value="1">전체</option>
+                            <option value="2">테스트 1</option>
+                            <option value="3">테스트 2</option>
+                        </select>
+                    </td>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">직급(직책)</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-11per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">주무관</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-11per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">연락처</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-11per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">부서명</label>
+                    </td>
+                    <td class="custom-tb-content custom-width-11per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">작업목적</label>
+                    </td>
+                    <td colspan="3" class="custom-tb-content custom-width-21per">
+                        <input id="asset_id" name="asset_id" class="custom-input" />
+                    </td>
+                    <td colspan="2" class="custom-tb-content custom-width-16per">
+                        <!-- 여분 공간 -->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="custom-tb-title custom-width-5per">
+                        <label for="asset_id" class="custom-tb-title-text">작업일자</label>
+                    </td>
+                    <td colspan="7" class="custom-tb-content">
+                        <label class="custom-radio">
+                            <input type="radio" name="radio-group"><span></span>금일
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="radio-group"><span></span>금월
+                        </label>
+                        <label class="custom-radio">
+                            <input type="radio" name="radio-group"><span></span>기간선택
+                        </label>
+                        <input type="text" name="datetimes" class="custom-input custom-width-150" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================= [중단: 작업자 정보] ========================= -->
+    <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+        <div class="flex-row-between custom-padding-10">
+            <p id="info-table-cnt" style="margin: 0;">작업자정보</p>
+            <div class="custom-button-wrap custom-margin-left-10">
+<!--                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">검색</button>-->
+                <button type="button" class="custom-btn custom-blue-btn" data-bs-toggle="modal" data-bs-target="#workerModal">검색</button>
+                <button type="button" class="custom-btn custom-gray-btn" onclick="saveRequest()">추가</button>
+            </div>
+        </div>
+
+        <div class="custom-border-top-solid">
+<!--            <div id="info-handsontable-container"></div>-->
+            <!-- 부모창 Handsontable 컨테이너 -->
+            <div id="workerParentHot" style="width:100%; height:300px;"></div>
+        </div>
+    </div>
+
+    <!-- ========================= [하단: 작업내역] ========================= -->
+    <div class="contentCardWrap custom-width-min-1280 custom-margin-bottom-20">
+        <div class="flex-row-between custom-padding-10">
+            <p id="history-table-cnt" style="margin: 0;">작업내역</p>
+            <div class="custom-button-wrap custom-margin-left-10">
+                <button type="button" class="custom-btn custom-blue-btn" onclick="searchButton()">검색</button>
+                <button type="button" class="custom-btn custom-gray-btn" onclick="searchButton()">추가</button>
+            </div>
+        </div>
+
+        <div class="custom-border-top-solid">
+            <div id="history-handsontable-container"></div>
+        </div>
+    </div>
+
+    <!-- 추가 스크립트 영역 (Thymeleaf Block) -->
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/application/cablelay/view.js}"></script>
+    </th:block>
+
+
+    <!-- ========== [작업자 검색 모달] ========== -->
+    <div class="modal fade" id="workerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="max-width:1200px;">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">작업자 검색</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+
+                    <!-- 검색영역 -->
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-3">
+                            <label>회사명
+                                <input type="text" id="searchCompanyName" class="form-control"/>
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>직책
+                                <input type="text" id="searchJobTitle" class="form-control"/>
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>성명
+                                <input type="text" id="searchWorkerName" class="form-control"/>
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <label>연락처
+                                <input type="text" id="searchContact" class="form-control"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-info" id="btnSearchWorker">검색</button>
+                    </div>
+
+                    <!-- Handsontable(검색결과) 컨테이너 -->
+                    <div id="workerModalHot" style="width:100%; height:300px;"></div>
+
+                    <hr/>
+                    <!-- "전체 작업자 목록" 자동 로딩, 필요 시 검색창 추가 가능 -->
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnAddSelected">리스트 추가</button>
+                    <button type="button" class="btn btn-danger" id="btnDeleteSelected">작업자 삭제</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+
+                <!-- 새 작업자 등록 Form -->
+                <h5>작업자 등록</h5>
+                <div class="row g-2 mb-2">
+                    <div class="col-md-3">
+                        <label>회사명 <input type="text" id="newCompanyName" class="form-control"/></label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>직책 <input type="text" id="newJobTitle" class="form-control"/></label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>성명 <input type="text" id="newWorkerName" class="form-control"/></label>
+                    </div>
+                    <div class="col-md-3">
+                        <label>연락처 <input type="text" id="newContact" class="form-control"/></label>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btnCreateWorker">작업자 등록</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 부모화면 로직 -->
+    <script th:src="@{/js/cablerequest/requestFormHot.js}"></script>
+    <!-- 모달 로직 -->
+    <script th:src="@{/js/cablerequest/modalWorkerHot.js}"></script>
+</main>
+</html>

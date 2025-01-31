@@ -1,7 +1,7 @@
-package cms.gongju.old.cablerequest.controller;
+package cms.gongju.cablerequest.controller;
 
-import cms.gongju.old.cablerequest.service.CableRequestService;
-import cms.gongju.old.cablerequest.vo.CableRequestVO;
+import cms.gongju.cablerequest.service.CableRequestService;
+import cms.gongju.cablerequest.vo.CableRequestVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,28 +20,7 @@ public class CableRequestController {
 
     private final CableRequestService cableRequestService;
 
-    /**
-     * 포설 신청 목록 화면
-     * @param model
-     * @return 목록 페이지
-     */
-    @GetMapping("/list")
-    public String requestList(Model model) {
-        // 화면에서 검색조건/파라미터 등을 받았다면, model에 담아서 넘길 수 있음
-        return "views/cablerequest/requestList";
-    }
 
-    /**
-     * 포설 신청 목록을 AJAX로 조회
-     * @param paramMap 검색 조건(기관명, 승인여부 등)
-     * @return 신청 목록
-     */
-    @ResponseBody
-    @PostMapping("/getList")
-    public List<Map<String, Object>> getRequestList(@RequestBody Map<String, Object> paramMap) {
-        // DB 조회
-        return cableRequestService.selectRequestList(paramMap);
-    }
 
     /**
      * 포설 신청 작성/수정 화면
@@ -52,14 +31,10 @@ public class CableRequestController {
     @GetMapping("/form")
     public String requestForm(@RequestParam(value="requestId", required=false) Long requestId,
                               Model model) {
-        if(requestId != null) {
-            // 기존 신청정보 불러오기
-            CableRequestVO cableRequestVO = cableRequestService.selectCableRequest(requestId);
-            model.addAttribute("cableRequestVO", cableRequestVO);
-        } else {
+
             // 신규 작성
             model.addAttribute("cableRequestVO", new CableRequestVO());
-        }
+
         return "views/cablerequest/requestForm";
     }
 

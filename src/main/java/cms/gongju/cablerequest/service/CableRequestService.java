@@ -1,7 +1,7 @@
-package cms.gongju.old.cablerequest.service;
+package cms.gongju.cablerequest.service;
 
-import cms.gongju.old.cablerequest.mapper.CableRequestMapper;
-import cms.gongju.old.cablerequest.vo.CableRequestVO;
+import cms.gongju.cablerequest.mapper.CableRequestMapper;
+import cms.gongju.cablerequest.vo.CableRequestVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

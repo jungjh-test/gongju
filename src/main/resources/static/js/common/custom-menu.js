@@ -34,7 +34,7 @@ function buildMenus(menuData) {
 function buildSideMenu(menuData, currentUrl) {
     const currentMenu = getParentMenuId(menuData, currentUrl);
     if (!currentMenu) {
-        alert2("알림", "메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
+        alert2("알림", "cc메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
         return;
     }
 
@@ -111,14 +111,14 @@ function buildPageNavigation(menuData, currentUrl) {
     // 중메뉴 찾기
     const currentMenu = getParentMenuId(menuData, currentUrl);
     if (!currentMenu) {
-        alert2("알림","메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
+        alert2("알림","aa메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
         return;
     }
 
     // 대메뉴 찾기
     const parentMenu = menuData.find(menu => menu.menu_id === currentMenu.parent_menu_id);
     if (!parentMenu) {
-        alert2("알림","메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
+        alert2("알림","bb메뉴를 찾을 수 없는 오류가 발생했습니다. <br> 새로고침 후 문제가 지속되면 관리자에게 문의하세요.", "info", "확인");
         return;
     }
 
@@ -154,7 +154,6 @@ function buildPageNavigation(menuData, currentUrl) {
 // 사용자가 접근한 상위 메뉴 id 찾기
 function getParentMenuId(menuData, currentUrl) {
     const currentMenu = menuData.find(menu => (menu.menu_order ==2 && currentUrl.includes(menu.menu_role)));
-
     return currentMenu ? currentMenu : null;
 }
 

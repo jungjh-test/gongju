@@ -1,6 +1,6 @@
-package cms.gongju.old.cablerequest.mapper;
+package cms.gongju.cablerequest.mapper;
 
-import cms.gongju.old.cablerequest.vo.CableRequestVO;
+import cms.gongju.cablerequest.vo.CableRequestVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cms.gongju.cablerequest.mapper.RemoveRequestMapper">
+
+    <!-- 목록 조회(제거: REQUEST_TYPE='REMOVE') -->
+    <select id="selectRemoveRequestList" parameterType="map" resultType="cms.gongju.cablerequest.vo.CableRequestVO">
+        SELECT
+            REQUEST_ID,
+            REQUEST_TYPE,
+            ORG_NAME,
+            DEPT_NAME,
+            POSITION_TITLE,
+            WORK_PURPOSE,
+            WORK_DATE_TYPE,
+            WORK_START_DATE,
+            WORK_END_DATE,
+            APPROVAL_STATUS,
+            DEL_YN,
+            REG_ID,
+            REG_DT,
+            UPD_ID,
+            UPD_DT
+        FROM TB_CABLE_REQUEST
+        WHERE DEL_YN = 'N'
+          AND REQUEST_TYPE = 'REMOVE'
+        ORDER BY REQUEST_ID DESC
+    </select>
+
+    <!-- 단건 조회(제거: REQUEST_TYPE='REMOVE') -->
+    <select id="selectRemoveRequest" parameterType="long" resultType="cms.gongju.cablerequest.vo.CableRequestVO">
+        SELECT
+            REQUEST_ID,
+            REQUEST_TYPE,
+            ORG_NAME,
+            DEPT_NAME,
+            POSITION_TITLE,
+            WORK_PURPOSE,
+            WORK_DATE_TYPE,
+            WORK_START_DATE,
+            WORK_END_DATE,
+            APPROVAL_STATUS,
+            DEL_YN,
+            REG_ID,
+            REG_DT,
+            UPD_ID,
+            UPD_DT
+        FROM TB_CABLE_REQUEST
+        WHERE REQUEST_ID = #{requestId}
+          AND REQUEST_TYPE = 'REMOVE'
+          AND DEL_YN = 'N'
+    </select>
+
+    <!-- Insert (REQUEST_TYPE='REMOVE') -->
+    <insert id="insertRemoveRequest" parameterType="map">
+        INSERT INTO TB_CABLE_REQUEST
+        (
+            REQUEST_TYPE,
+            ORG_NAME,
+            DEPT_NAME,
+            POSITION_TITLE,
+            WORK_PURPOSE,
+            WORK_DATE_TYPE,
+            WORK_START_DATE,
+            WORK_END_DATE,
+            APPROVAL_STATUS,
+            DEL_YN,
+            REG_ID,
+            REG_DT
+        )
+        VALUES
+            (
+                'REMOVE',
+                #{orgName},
+                #{deptName},
+                #{positionTitle},
+                #{workPurpose},
+                #{workDateType},
+                #{workStartDate},
+                #{workEndDate},
+                '대기',
+                'N',
+                #{loginUserId},
+                NOW()
+            )
+    </insert>
+
+    <!-- Update (REQUEST_TYPE='REMOVE') -->
+    <update id="updateRemoveRequest" parameterType="map">
+        UPDATE TB_CABLE_REQUEST
+        SET ORG_NAME        = #{orgName},
+            DEPT_NAME       = #{deptName},
+            POSITION_TITLE  = #{positionTitle},
+            WORK_PURPOSE    = #{workPurpose},
+            WORK_DATE_TYPE  = #{workDateType},
+            WORK_START_DATE = #{workStartDate},
+            WORK_END_DATE   = #{workEndDate},
+            UPD_ID          = #{loginUserId},
+            UPD_DT          = NOW()
+        WHERE REQUEST_ID      = #{requestId}
+          AND REQUEST_TYPE    = 'REMOVE'
+          AND DEL_YN          = 'N'
+    </update>
+
+</mapper>

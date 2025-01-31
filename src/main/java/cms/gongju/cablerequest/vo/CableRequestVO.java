@@ -1,4 +1,4 @@
-package cms.gongju.old.cablerequest.vo;
+package cms.gongju.cablerequest.vo;
 
 import lombok.Data;
 
@@ -10,6 +10,7 @@ import java.util.Date;
 @Data
 public class CableRequestVO {
     private Long requestId;         // REQUEST_ID
+    private String requestType;    // 'INSTALL' or 'REMOVE' 구분
     private String orgName;         // 기관명
     private String deptName;        // 부서명
     private String positionTitle;   // 직급(직책)

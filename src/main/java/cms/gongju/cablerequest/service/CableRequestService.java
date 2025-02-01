@@ -5,6 +5,7 @@ import cms.gongju.cablerequest.vo.CableRequestVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,24 +40,59 @@ public class CableRequestService {
     /**
      * 포설 신청 저장
      * (신규면 Insert, 기존이면 Update)
-     * @param paramMap
-     * @return
      */
-    public Map<String, Object> saveCableRequest(Map<String, Object> paramMap) {
-        Map<String, Object> resultMap = new HashMap<>();
-        // 신규/기존 판별 로직(예: requestId 값이 유무)
-        if(paramMap.get("requestId") == null) {
-            // Insert
-            cableRequestMapper.insertCableRequest(paramMap);
-            // 만약 세부 작업내역, 작업자정보도 함께 저장해야 하면 paramMap 내 리스트를 반복처리
-        } else {
-            // Update
-            cableRequestMapper.updateCableRequest(paramMap);
-            // 세부내역 업데이트 로직 등등
+
+
+    public Map<String,Object> saveCableRequest(Map<String,Object> param){
+        Map<String,Object> result = new HashMap<>();
+        // 1) requestInfo
+        Map<String,Object> reqInfo = (Map<String,Object>) param.get("requestInfo");
+
+
+        // MyBatis insert -> PK 주입 (useGeneratedKeys)
+        // int rowCount = cableRequestMapper.insertCableRequest(reqInfo);
+        // rowCount는 1(성공시), PK는 reqInfo.get("requestId")로 세팅됨
+        cableRequestMapper.insertCableRequest(reqInfo);
+
+        // Now, get the newly generated PK
+        /*Long newRequestId = (Long) reqInfo.get("requestId");
+        System.out.println("===> newRequestId = " + newRequestId);*/
+
+
+        BigInteger bigVal = (BigInteger) reqInfo.get("requestId");
+        long newRequestId = bigVal.longValue();
+        System.out.println("===> newRequestId = " + newRequestId);
+
+        // 2) workerList
+        List<Map<String,Object>> workerList = (List<Map<String,Object>>) param.get("workerList");
+        if(workerList != null){
+            for(Map<String,Object> w : workerList){
+                // workerId가 있어야만 매핑
+                Object workerIdObj = w.get("workerId");
+                if(workerIdObj != null){
+                    // Insert into TB_REQUEST_WORKER
+                    Map<String,Object> rwParam = new HashMap<>();
+                    rwParam.put("requestId", newRequestId);
+                    rwParam.put("workerId", workerIdObj);
+                    cableRequestMapper.insertRequestWorker(rwParam);
+                }
+                // else (workerId == null) => skip
+            }
         }
-        resultMap.put("result", "SUCCESS");
-        return resultMap;
+
+        // 3) detailList
+        List<Map<String,Object>> detailList = (List<Map<String,Object>>) param.get("detailList");
+        if(detailList!=null){
+            for(Map<String,Object> d : detailList){
+                d.put("requestId", newRequestId);
+                cableRequestMapper.insertWorkDetail(d); // TB_CABLE_WORK_DETAIL
+            }
+        }
+
+        result.put("result","SUCCESS");
+        return result;
     }
+
 
     /**
      * 팝업에서 작업자 목록 조회

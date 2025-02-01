@@ -44,10 +44,10 @@ public class CableRequestController {
      * @return 처리결과
      */
     @ResponseBody
-    @PostMapping("/saveRequest")
-    public Map<String, Object> saveRequest(@RequestBody Map<String, Object> paramMap) {
-        // 서비스에서 DB Insert/Update 처리
-        return cableRequestService.saveCableRequest(paramMap);
+    @PostMapping("/save")
+    public Map<String,Object> saveRequest(@RequestBody Map<String,Object> param){
+
+        return cableRequestService.saveCableRequest(param);
     }
 
     /**

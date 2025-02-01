@@ -19,7 +19,10 @@ public interface CableRequestMapper {
     CableRequestVO selectCableRequest(Long requestId);
 
     // 신청 Insert
-    int insertCableRequest(Map<String, Object> paramMap);
+//    int insertCableRequest(Map<String, Object> paramMap);
+    Long insertCableRequest(Map<String,Object> reqInfo);
+    int insertRequestWorker(Map<String,Object> workerMap);
+    int insertWorkDetail(Map<String,Object> detailMap);
 
     // 신청 Update
     int updateCableRequest(Map<String, Object> paramMap);

@@ -55,7 +55,7 @@
     </select>
 
     <!-- 신청 Insert -->
-    <insert id="insertCableRequest" parameterType="map">
+    <!--<insert id="insertCableRequest" parameterType="map">
         INSERT INTO TB_CABLE_REQUEST
         (
         ORG_NAME
@@ -84,7 +84,47 @@
         ,#{loginUserId}
         ,NOW()
         )
+    </insert>-->
+
+    <!-- TB_CABLE_REQUEST Insert -->
+    <insert id="insertCableRequest" parameterType="map" useGeneratedKeys="true" keyProperty="requestId" keyColumn="REQUEST_ID">
+        INSERT INTO tb_cable_request
+        ( ORG_NAME, DEPT_NAME, POSITION_TITLE, WORK_PURPOSE, WORK_DATE_TYPE, WORK_START_DATE, WORK_END_DATE, APPROVAL_STATUS, DEL_YN, REG_ID, REG_DT )
+        VALUES
+            ( #{orgName}, #{deptName}, #{positionTitle}, #{workPurpose}, #{workDateType}, #{workStartDate}, #{workEndDate}, '대기','N','adminUser',NOW() )
     </insert>
+
+    <!-- TB_REQUEST_WORKER Insert -->
+    <!--<insert id="insertRequestWorker" parameterType="map">
+        INSERT INTO tb_request_worker
+        (REQUEST_ID, WORKER_NAME, COMPANY_NAME, JOB_TITLE, CONTACT, REG_ID, REG_DT)
+        VALUES
+            (#{requestId}, #{workerName}, #{companyName}, #{jobTitle}, #{contact}, 'adminUser', NOW())
+    </insert>-->
+    <!-- 2) TB_REQUEST_WORKER Insert (매핑) -->
+    <insert id="insertRequestWorker" parameterType="map">
+        INSERT INTO tb_request_worker
+            ( REQUEST_ID, WORKER_ID, REG_ID, REG_DT )
+        VALUES
+            ( #{requestId}, #{workerId}, 'admin', NOW() )
+    </insert>
+
+    <!-- TB_CABLE_WORK_DETAIL Insert -->
+    <insert id="insertWorkDetail" parameterType="map">
+        INSERT INTO tb_cable_work_detail
+        (REQUEST_ID, CABLE_TYPE, CABLE_COLOR, CABLE_LENGTH, START_LABEL_ID, END_LABEL_ID, REMARKS,
+         START_ASSET_ID, START_COMPONENT_ID, START_PORT, END_ASSET_ID, END_COMPONENT_ID, END_PORT,
+         REG_ID, REG_DT)
+        VALUES
+            (
+                #{requestId}, #{cableType}, #{cableColor}, #{cableLength},
+                #{startLabel}, #{endLabel}, #{remark},
+                #{startAssetId}, #{startConfigId}, #{startPort},
+                #{endAssetId},   #{endConfigId},   #{endPort},
+                'adminUser', NOW()
+            )
+    </insert>
+
 
     <!-- 신청 Update -->
     <update id="updateCableRequest" parameterType="map">
